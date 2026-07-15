@@ -1,0 +1,16 @@
+/* Shared Backupta marketing background — source artwork 3840×2160 (native; not resampled in build). */
+html {
+  min-height: 100%;
+}
+
+body {
+  background-color: #060914;
+  background-image:
+    linear-gradient(180deg, rgba(6, 9, 20, 0.48) 0%, rgba(6, 9, 20, 0.8) 100%),
+    url("/admin-assets/backupta-bg-aurora-vault.png");
+  /* Cover uses the full-resolution asset; scales down on smaller viewports without upscaling beyond fit. */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

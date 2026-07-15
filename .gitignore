@@ -1,0 +1,23 @@
+# Dependencies
+/node_modules
+
+# Build output
+/dist
+
+# Env / secrets (configure these in the Vercel dashboard instead)
+.env
+.env.*
+!.env.example
+
+# Prisma generated client
+/prisma/generated
+
+# Vercel
+.vercel
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store

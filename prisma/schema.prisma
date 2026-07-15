@@ -1,0 +1,77 @@
+generator client {
+  provider      = "prisma-client-js"
+  // "native" for local dev; "rhel-openssl-3.0.x" for the Vercel (AWS Lambda) runtime.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  // Pooled connection (e.g. Neon "-pooler" host) used by the app at runtime.
+  url      = env("DATABASE_URL")
+  // Direct (non-pooled) connection used by `prisma migrate` at build time.
+  // Locally you can set this to the same value as DATABASE_URL.
+  directUrl = env("DIRECT_URL")
+}
+
+model TenantOidcConfig {
+  tenantId        String   @id
+  customerId      String   @default("default")
+  oktaIssuer      String
+  clientId        String
+  clientSecretEnc String
+  scopes          String   @default("openid profile email")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([customerId])
+}
+
+model TenantSamlConfig {
+  tenantId    String   @id
+  customerId  String   @default("default")
+  idpSsoUrl   String
+  idpCert     String
+  idpEntityId String?
+  oktaOrgUrl  String?
+  oktaAppId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([customerId])
+}
+
+model LoginTransaction {
+  state        String   @id
+  tenantId     String
+  nonce        String
+  codeVerifier String
+  redirectTo   String?
+  createdAt    DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([createdAt])
+}
+
+model SamlLoginTransaction {
+  relayState String   @id
+  tenantId   String
+  redirectTo String?
+  createdAt  DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([createdAt])
+}
+
+model Session {
+  id          String   @id
+  tenantId    String
+  subject     String
+  claims      Json
+  tokenSetEnc String?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  @@index([tenantId])
+  @@index([expiresAt])
+}
+
