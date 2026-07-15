@@ -716,8 +716,17 @@ app.get(
     }
 
     const email = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
+    const emailVerified = payload.email_verified === true || payload.email_verified === "true";
     if (cfg.allowedEmails?.length) {
-      if (!email || !cfg.allowedEmails.includes(email)) {
+      // Entries can be a full email (exact match) or a domain like "@backupta.com"
+      // (matches any address at that domain). Domain matches require a verified email.
+      const domain = email.includes("@") ? email.slice(email.lastIndexOf("@")) : "";
+      const allowed =
+        !!email &&
+        cfg.allowedEmails.some((entry) =>
+          entry.startsWith("@") ? entry === domain && emailVerified : entry === email,
+        );
+      if (!allowed) {
         return redirectFail("Your account is not allowed to access broker admin.");
       }
     } else if (!email) {
